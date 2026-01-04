@@ -22,86 +22,90 @@
   --stroke:rgba(0,0,0,.55);
 }
 
-/* ---- CURSOR (RESTORED) ---- */
+/* ----------------
+   GLOBAL RESET
+----------------- */
 *{
   box-sizing:border-box;
-  cursor: url("/cursor.png") 16 16, auto;
+  cursor:url("/cursor.png") 16 16, auto;
 }
 
 html,body{
   margin:0;
   padding:0;
-  min-height:100%;
-  background:var(--paper);
-  color:var(--ink);
+  height:100%;
+  background:#fff;
   font-family:'Puggos', sans-serif;
+  -webkit-text-size-adjust:100%;
 }
 
-/* ---- PAGE ---- */
+/* ----------------
+   PAGE
+----------------- */
 .subscribe-page{
   min-height:100svh;
 }
 
-/* ---- ART SECTION ---- */
+/* ----------------
+   ART SECTION
+----------------- */
 .art-section{
   position:relative;
-  min-height:100svh;
+  height:100svh;
   overflow:hidden;
-  display:flex;
-  align-items:flex-end;
-  justify-content:flex-end;
-  padding:clamp(16px,4vw,64px);
 }
 
-/* ---- BACKGROUND (DESKTOP DEFAULT) ---- */
+/* ----------------
+   BACKGROUND
+----------------- */
 .art-bg{
   position:absolute;
   inset:0;
   background:url("/emailsubscribtion.png") center / cover no-repeat;
-  transform:scale(1.02);
   z-index:0;
 }
 
-/* ---- VIGNETTE ---- */
+/* ----------------
+   VIGNETTE
+----------------- */
 .paper-vignette{
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:radial-gradient(
-    1200px 800px at 50% 45%,
-    transparent,
-    rgba(0,0,0,.08)
-  );
+  background:radial-gradient(1200px 800px at 50% 45%, transparent, rgba(0,0,0,.08));
   opacity:.25;
   z-index:1;
 }
 
-/* ---- UI ---- */
+/* ----------------
+   UI
+----------------- */
 .subscribe-ui{
-  position:relative;
-  z-index:2;
-  width:min(520px,100%);
+  position:absolute;
+  right:clamp(16px,4vw,64px);
+  bottom:clamp(16px,4vw,64px);
+  z-index:3;
+  width:min(520px,90%);
   display:grid;
   gap:14px;
 }
 
-/* ---- INPUT ---- */
+/* ----------------
+   INPUT
+----------------- */
 .email-input{
   width:100%;
   padding:18px;
   border:2px solid var(--stroke);
   border-radius:12px;
   font-family:'Puggos', sans-serif;
-  font-size:clamp(18px,4vw,26px);
+  font-size:22px;
   background:rgba(255,255,255,.9);
 }
 
-.email-input::placeholder{
-  font-family:'Puggos', sans-serif;
-  letter-spacing:1px;
-}
-
-/* ---- BUTTON ---- */
+/* ----------------
+   BUTTON
+----------------- */
 .subscribe-btn{
   padding:16px;
   border-radius:999px;
@@ -109,11 +113,18 @@ html,body{
   background:#000;
   color:#fff;
   font-family:'Puggos', sans-serif;
-  font-size:clamp(18px,4vw,26px);
+  font-size:22px;
   letter-spacing:2px;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1);
 }
 
-/* ---- TEXT ---- */
+.subscribe-btn:hover{
+  transform:translateY(-4px);
+}
+
+/* ----------------
+   TEXT
+----------------- */
 .tiny-note{
   font-family:'Puggos', sans-serif;
   font-size:12px;
@@ -121,14 +132,16 @@ html,body{
   opacity:.6;
 }
 
-/* ---- CORNERS ---- */
+/* ----------------
+   CORNERS
+----------------- */
 .enter-link,
 .quiet-tag{
   position:absolute;
-  font-family:Courier, monospace;
+  font-family:'Puggos', sans-serif;
   font-size:11px;
   opacity:.4;
-  z-index:3;
+  z-index:4;
 }
 
 .enter-link{
@@ -144,21 +157,31 @@ html,body{
 }
 
 /* =====================
-   MOBILE (IMAGE SWAP)
+   MOBILE FIXES
 ===================== */
 @media (max-width:640px){
-  .art-section{
-    align-items:center;
-    justify-content:center;
-    padding:24px;
+
+  .art-bg{
+    background:url("/subscribe-page-mobile.png") center / cover no-repeat;
   }
 
   .subscribe-ui{
+    left:0;
+    right:0;
+    bottom:0;
+    padding:24px;
     width:100%;
+    background:linear-gradient(
+      to top,
+      rgba(255,255,255,.95),
+      rgba(255,255,255,.85),
+      transparent
+    );
   }
 
-  .art-bg{
-    background:url("/subscribe-page-mobile.png") center top / cover no-repeat;
+  .email-input,
+  .subscribe-btn{
+    font-size:20px;
   }
 
   .enter-link{
