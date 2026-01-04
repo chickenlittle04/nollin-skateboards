@@ -1,262 +1,182 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NOLLIN — Subscribe</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOLLIN — Subscribe</title>
 
-  <style>
-    @font-face {
-      font-family: 'Puggos';
-      src: url('./puggos-regular.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
+<style>
+@font-face {
+  font-family: 'Puggos';
+  src:
+    url('/fonts/puggos-regular.woff2') format('woff2'),
+    url('/fonts/puggos-regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
-    :root{
-      --ink: #111;
-      --paper: #fff;
-      --stroke: rgba(0,0,0,.55);
+:root{
+  --ink:#111;
+  --paper:#fff;
+  --stroke:rgba(0,0,0,.55);
+}
 
-      --scribble-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M6 22C9 17 12 9 17 7c2-1 4 1 2 3-3 4-6 8-8 13' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M16 10l6 2' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 2 24, auto;
-    }
+*{ box-sizing:border-box; }
 
-    *{ box-sizing: border-box; }
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Puggos', sans-serif;
+}
 
-    html, body{
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Puggos', sans-serif;
-    }
+/* ---- PAGE ---- */
+.subscribe-page{
+  min-height:100svh; /* mobile-safe */
+}
 
-    html, body, .subscribe-page, .art-section, .art-bg, .paper-vignette,
-    .subscribe-ui, .quiet-tag, .enter-link, .tiny-note, button, a, div, section, main {
-      cursor: var(--scribble-cursor);
-    }
+/* ---- ART SECTION ---- */
+.art-section{
+  position:relative;
+  min-height:100svh;
+  overflow:hidden;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  padding:clamp(16px,4vw,64px);
+}
 
-    input, textarea { cursor: text; }
+/* ---- BACKGROUND ---- */
+.art-bg{
+  position:absolute;
+  inset:0;
+  background:url("emailsubscribtion.png") center / cover no-repeat;
+  transform:scale(1.02);
+  z-index:0;
+}
 
-    .subscribe-page{ min-height: 100vh; }
+/* ---- VIGNETTE ---- */
+.paper-vignette{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(1200px 800px at 50% 45%, transparent, rgba(0,0,0,.08));
+  opacity:.25;
+  z-index:1;
+}
 
-    /* ✅ MOBILE-SAFE VIEWPORT */
-    .art-section{
-      position: relative;
-      min-height: 100svh;
-      overflow: hidden;
-      background: var(--paper);
-    }
+/* ---- UI ---- */
+.subscribe-ui{
+  position:relative;
+  z-index:2;
+  width:min(520px,100%);
+  display:grid;
+  gap:14px;
+}
 
-    .art-bg{
-      position: absolute;
-      inset: -2%;
-      background-image: url("emailsubscribtion.png");
-      background-repeat: no-repeat;
+/* ---- INPUT ---- */
+.email-input{
+  width:100%;
+  padding:18px;
+  border:2px solid var(--stroke);
+  border-radius:12px;
+  font-family:'Puggos', sans-serif;
+  font-size:clamp(18px,4vw,26px);
+  background:rgba(255,255,255,.9);
+}
 
-      /* ✅ SMARTER RESPONSIVE SCALING */
-      background-size: clamp(1200px, 160vw, 2000px);
-      background-position: center top;
+.email-input::placeholder{
+  font-family:'Puggos', sans-serif;
+  letter-spacing:1px;
+}
 
-      transform: translate3d(0,0,0) scale(1.02);
-      will-change: transform;
-    }
+/* ---- BUTTON ---- */
+.subscribe-btn{
+  padding:16px;
+  border-radius:999px;
+  border:0;
+  background:#000;
+  color:#fff;
+  font-family:'Puggos', sans-serif;
+  font-size:clamp(18px,4vw,26px);
+  letter-spacing:2px;
+}
 
-    .paper-vignette{
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(1200px 800px at 50% 45%, rgba(255,255,255,0), rgba(0,0,0,0.08));
-      mix-blend-mode: multiply;
-      opacity: .30;
-    }
+/* ---- TEXT ---- */
+.tiny-note{
+  font-family:Courier, monospace;
+  font-size:12px;
+  text-align:center;
+  opacity:.6;
+}
 
-    .subscribe-ui{
-      position: absolute;
-      right: clamp(18px, 4vw, 64px);
-      bottom: clamp(18px, 4vw, 54px);
-      width: min(540px, 92vw);
-      display: grid;
-      gap: 14px;
-      z-index: 2;
+/* ---- CORNERS ---- */
+.enter-link,
+.quiet-tag{
+  position:absolute;
+  font-family:Courier, monospace;
+  font-size:11px;
+  opacity:.4;
+  z-index:3;
+}
 
-      opacity: 0;
-      transform: translateY(14px);
-      animation: uiIn .85s ease forwards;
-      animation-delay: .10s;
-    }
+.enter-link{
+  left:16px;
+  bottom:14px;
+  text-decoration:none;
+  color:#000;
+}
 
-    @keyframes uiIn{
-      to { opacity: 1; transform: translateY(0); }
-    }
+.quiet-tag{
+  left:16px;
+  top:14px;
+}
 
-    .email-input{
-      width: 100%;
-      padding: 18px;
-      border: 2px solid var(--stroke);
-      border-radius: 10px;
-      font-size: clamp(18px, 1.7vw, 26px);
-      letter-spacing: 1px;
-      outline: none;
-      background: rgba(255,255,255,.85);
-      backdrop-filter: blur(2px);
-    }
+/* =====================
+   MOBILE FIXES
+===================== */
+@media (max-width:640px){
+  .art-section{
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
 
-    .email-input:focus{
-      border-color: rgba(0,0,0,.9);
-      background: rgba(255,255,255,.95);
-    }
+  .subscribe-ui{
+    width:100%;
+  }
 
-    .subscribe-btn{
-      width: 100%;
-      padding: 16px 18px;
-      border: 0;
-      border-radius: 999px;
-      background: #000;
-      color: #fff;
-      font-size: clamp(18px, 1.7vw, 26px);
-      letter-spacing: 2px;
-      transition: transform .12s ease, opacity .12s ease;
-    }
+  .art-bg{
+    background-position:center top;
+  }
 
-    .subscribe-btn:hover{
-      transform: translateY(-1px) rotate(-0.15deg);
-      opacity: .94;
-    }
-
-    .subscribe-btn:active{
-      transform: translateY(0);
-      opacity: .86;
-    }
-
-    .tiny-note{
-      font-family: "Courier New", monospace;
-      font-size: 12px;
-      opacity: .62;
-      text-align: center;
-    }
-
-    .enter-link{
-      position: absolute;
-      left: 18px;
-      bottom: 16px;
-      z-index: 2;
-      font-family: "Courier New", monospace;
-      font-size: 12px;
-      opacity: .45;
-      text-decoration: none;
-      color: #000;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .enter-link::before{
-      content: "";
-      width: 18px;
-      height: 10px;
-      border-left: 2px solid rgba(0,0,0,.65);
-      border-bottom: 2px solid rgba(0,0,0,.65);
-      transform: rotate(35deg);
-    }
-
-    .quiet-tag{
-      position: absolute;
-      left: 18px;
-      top: 14px;
-      font-family: "Courier New", monospace;
-      font-size: 11px;
-      opacity: .22;
-      letter-spacing: .6px;
-      z-index: 2;
-    }
-
-    /* ✅ REAL MOBILE LAYOUT */
-    @media (max-width: 520px){
-      .art-section{
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-      }
-
-      .subscribe-ui{
-        position: relative;
-        right: auto;
-        bottom: auto;
-        margin: 0 auto 22px;
-        width: 92vw;
-        transform: none;
-      }
-
-      .email-input,
-      .subscribe-btn{
-        font-size: 18px;
-      }
-
-      .quiet-tag{ opacity: .15; }
-      .enter-link{ opacity: .6; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .subscribe-ui{ animation: none; opacity: 1; transform: none; }
-      .art-bg{ transition: none !important; }
-    }
-  </style>
+  .enter-link{
+    bottom:8px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <main class="subscribe-page">
-    <section class="art-section">
-      <div class="art-bg" id="parallaxBg"></div>
-      <div class="paper-vignette"></div>
+<main class="subscribe-page">
+<section class="art-section">
 
-      <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
-      <a class="enter-link" href="index.html">enter</a>
+  <div class="art-bg"></div>
+  <div class="paper-vignette"></div>
 
-      <form class="subscribe-ui" id="subscribeForm">
-        <input class="email-input" id="email" type="email" placeholder="EMAIL" required />
-        <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
-        <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
-      </form>
-    </section>
-  </main>
+  <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
+  <a class="enter-link" href="index.html">enter</a>
 
-  <script>
-    const form = document.getElementById("subscribeForm");
-    const email = document.getElementById("email");
-    const statusMsg = document.getElementById("statusMsg");
-    const bg = document.getElementById("parallaxBg");
+  <form class="subscribe-ui">
+    <input class="email-input" type="email" placeholder="EMAIL" required />
+    <button class="subscribe-btn">SUBSCRIBE</button>
+    <div class="tiny-note">Get notified when something happens.</div>
+  </form>
 
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      statusMsg.textContent = "You’re in. We’ll email you when the page wakes up.";
-      email.value = "";
-    });
-
-    if (window.innerWidth < 600) {
-      bg.style.transform = "scale(1.05)";
-    } else {
-      let targetX = 0, targetY = 0;
-      let currentX = 0, currentY = 0;
-      const strength = 10;
-
-      window.addEventListener("mousemove", e => {
-        const x = (e.clientX / window.innerWidth) - 0.5;
-        const y = (e.clientY / window.innerHeight) - 0.5;
-        targetX = -x * strength;
-        targetY = -y * strength;
-      });
-
-      function tick(){
-        currentX += (targetX - currentX) * 0.06;
-        currentY += (targetY - currentY) * 0.06;
-        bg.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1.02)`;
-        requestAnimationFrame(tick);
-      }
-      tick();
-    }
-  </script>
+</section>
+</main>
 </body>
 </html>
