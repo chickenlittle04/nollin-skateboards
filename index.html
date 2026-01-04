@@ -6,12 +6,14 @@
 <title>NOLLIN — Subscribe</title>
 
 <style>
-@font-face {
-  font-family: 'Puggos';
-  src:
-    url('/fonts/puggos-regular.woff2') format('woff2'),
-    url('/fonts/puggos-regular.ttf') format('truetype');
-  font-weight: normal;
+/* =====================
+   FONT (FIXED PATH)
+   Your file is in repo root:  ./Puggos-Regular.ttf
+===================== */
+@font-face{
+  font-family: "Puggos";
+  src: url("./Puggos-Regular.ttf") format("truetype");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -20,24 +22,35 @@
   --ink:#111;
   --paper:#fff;
   --stroke:rgba(0,0,0,.55);
+
+  /* Scribble cursor (inline SVG) */
+  --scribble-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M6 22C9 17 12 9 17 7c2-1 4 1 2 3-3 4-6 8-8 13' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M16 10l6 2' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 2 24, auto;
 }
 
 /* ----------------
    GLOBAL RESET
 ----------------- */
-*{
-  box-sizing:border-box;
-  cursor:url("/cursor.png") 16 16, auto;
-}
+*{ box-sizing:border-box; }
 
 html,body{
   margin:0;
   padding:0;
-  height:100%;
-  background:#fff;
-  font-family:'Puggos', sans-serif;
+  min-height:100%;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Puggos", sans-serif;
   -webkit-text-size-adjust:100%;
 }
+
+/* Cursor everywhere (desktop + mobile friendly)
+   NOTE: phones won't show a cursor, that's normal */
+html, body, .subscribe-page, .art-section, .art-bg, .paper-vignette,
+.subscribe-ui, .quiet-tag, .enter-link, .tiny-note, button, a {
+  cursor: var(--scribble-cursor);
+}
+
+/* Keep I-beam only where typing */
+input, textarea { cursor: text; }
 
 /* ----------------
    PAGE
@@ -51,17 +64,19 @@ html,body{
 ----------------- */
 .art-section{
   position:relative;
-  height:100svh;
+  min-height:100svh;
   overflow:hidden;
 }
 
 /* ----------------
    BACKGROUND
+   (FIXED PATHS + cover)
 ----------------- */
 .art-bg{
   position:absolute;
   inset:0;
-  background:url("/emailsubscribtion.png") center / cover no-repeat;
+  background: url("./emailsubscribtion.png") center / cover no-repeat;
+  transform: scale(1.02);
   z-index:0;
 }
 
@@ -72,22 +87,32 @@ html,body{
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:radial-gradient(1200px 800px at 50% 45%, transparent, rgba(0,0,0,.08));
+  background: radial-gradient(1200px 800px at 50% 45%, transparent, rgba(0,0,0,.08));
   opacity:.25;
   z-index:1;
 }
 
 /* ----------------
-   UI
+   UI (desktop bottom-right)
 ----------------- */
 .subscribe-ui{
   position:absolute;
   right:clamp(16px,4vw,64px);
   bottom:clamp(16px,4vw,64px);
   z-index:3;
-  width:min(520px,90%);
+  width:min(520px,92vw);
   display:grid;
   gap:14px;
+
+  /* bring back the “in” motion */
+  opacity:0;
+  transform: translateY(14px);
+  animation: uiIn .85s ease forwards;
+  animation-delay: .10s;
+}
+
+@keyframes uiIn{
+  to { opacity:1; transform: translateY(0); }
 }
 
 /* ----------------
@@ -98,13 +123,21 @@ html,body{
   padding:18px;
   border:2px solid var(--stroke);
   border-radius:12px;
-  font-family:'Puggos', sans-serif;
-  font-size:22px;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
+  letter-spacing:1px;
+  outline:none;
   background:rgba(255,255,255,.9);
+  backdrop-filter: blur(2px);
+}
+
+.email-input::placeholder{
+  font-family:"Puggos", sans-serif;
+  letter-spacing:1px;
 }
 
 /* ----------------
-   BUTTON
+   BUTTON (bounce back)
 ----------------- */
 .subscribe-btn{
   padding:16px;
@@ -112,21 +145,27 @@ html,body{
   border:0;
   background:#000;
   color:#fff;
-  font-family:'Puggos', sans-serif;
-  font-size:22px;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
   letter-spacing:2px;
-  transition:transform .25s cubic-bezier(.2,.8,.2,1);
+  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
 }
 
 .subscribe-btn:hover{
-  transform:translateY(-4px);
+  transform: translateY(-1px) rotate(-0.15deg);
+  opacity:.94;
+  filter: contrast(1.05);
+}
+.subscribe-btn:active{
+  transform: translateY(0) rotate(0deg);
+  opacity:.86;
 }
 
 /* ----------------
    TEXT
 ----------------- */
 .tiny-note{
-  font-family:'Puggos', sans-serif;
+  font-family: "Courier New", monospace;
   font-size:12px;
   text-align:center;
   opacity:.6;
@@ -138,7 +177,7 @@ html,body{
 .enter-link,
 .quiet-tag{
   position:absolute;
-  font-family:'Puggos', sans-serif;
+  font-family:"Courier New", monospace;
   font-size:11px;
   opacity:.4;
   z-index:4;
@@ -157,57 +196,95 @@ html,body{
 }
 
 /* =====================
-   MOBILE FIXES
+   MOBILE
+   - Use mobile background
+   - Keep UI at bottom (not blocking the whole art)
+   - Make art fill phone with no white gap
 ===================== */
 @media (max-width:640px){
-
-  .art-bg{
-    background:url("/subscribe-page-mobile.png") center / cover no-repeat;
+  .art-section{
+    min-height:100svh;
   }
 
+  .art-bg{
+    background: url("./subscribe-page-mobile.png") center / cover no-repeat;
+    transform: none; /* avoid weird edges on mobile */
+  }
+
+  /* Bottom “sheet” instead of full overlay */
   .subscribe-ui{
     left:0;
     right:0;
     bottom:0;
-    padding:24px;
     width:100%;
-    background:linear-gradient(
+    padding:18px 18px 22px;
+    gap:12px;
+
+    /* only tint the very bottom area */
+    background: linear-gradient(
       to top,
-      rgba(255,255,255,.95),
-      rgba(255,255,255,.85),
-      transparent
+      rgba(255,255,255,.96) 0%,
+      rgba(255,255,255,.82) 55%,
+      rgba(255,255,255,0) 100%
     );
   }
 
-  .email-input,
-  .subscribe-btn{
+  .email-input{
+    padding:16px;
     font-size:20px;
   }
 
-  .enter-link{
-    bottom:8px;
+  .subscribe-btn{
+    padding:15px;
+    font-size:20px;
   }
+
+  .enter-link{ bottom:8px; }
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce){
+  .subscribe-ui{ animation:none; opacity:1; transform:none; }
 }
 </style>
 </head>
 
 <body>
 <main class="subscribe-page">
-<section class="art-section">
+  <section class="art-section" aria-label="Email subscription">
 
-  <div class="art-bg"></div>
-  <div class="paper-vignette"></div>
+    <div class="art-bg" aria-hidden="true"></div>
+    <div class="paper-vignette" aria-hidden="true"></div>
 
-  <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
-  <a class="enter-link" href="index.html">enter</a>
+    <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
+    <a class="enter-link" href="index.html">enter</a>
 
-  <form class="subscribe-ui">
-    <input class="email-input" type="email" placeholder="EMAIL" required />
-    <button class="subscribe-btn">SUBSCRIBE</button>
-    <div class="tiny-note">Get notified when something happens.</div>
-  </form>
+    <form class="subscribe-ui" id="subscribeForm" autocomplete="off">
+      <input class="email-input" id="email" type="email" placeholder="EMAIL" required />
+      <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
+      <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
+    </form>
 
-</section>
+  </section>
 </main>
+
+<script>
+  // Demo-only submit behavior
+  const form = document.getElementById("subscribeForm");
+  const email = document.getElementById("email");
+  const statusMsg = document.getElementById("statusMsg");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const val = email.value.trim();
+    if (!val) return;
+
+    statusMsg.textContent = "You’re in. We’ll email you when the page wakes up.";
+    statusMsg.style.opacity = "0.85";
+
+    email.value = "";
+    email.blur();
+  });
+</script>
 </body>
 </html>
