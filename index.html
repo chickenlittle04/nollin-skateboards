@@ -7,8 +7,8 @@
 
 <style>
 /* =====================
-   FONT (FIXED PATH)
-   Your file is in repo root:  ./Puggos-Regular.ttf
+   FONT (repo root)
+   ./Puggos-Regular.ttf
 ===================== */
 @font-face{
   font-family: "Puggos";
@@ -42,8 +42,8 @@ html,body{
   -webkit-text-size-adjust:100%;
 }
 
-/* Cursor everywhere (desktop + mobile friendly)
-   NOTE: phones won't show a cursor, that's normal */
+/* Cursor everywhere (desktop)
+   NOTE: phones won’t show a cursor, that’s normal */
 html, body, .subscribe-page, .art-section, .art-bg, .paper-vignette,
 .subscribe-ui, .quiet-tag, .enter-link, .tiny-note, button, a {
   cursor: var(--scribble-cursor);
@@ -54,9 +54,11 @@ input, textarea { cursor: text; }
 
 /* ----------------
    PAGE
+   Use dvh so iOS Safari doesn't leave a “gap”
 ----------------- */
 .subscribe-page{
-  min-height:100svh;
+  min-height:100vh;   /* fallback */
+  min-height:100dvh;  /* modern mobile browsers */
 }
 
 /* ----------------
@@ -64,7 +66,8 @@ input, textarea { cursor: text; }
 ----------------- */
 .art-section{
   position:relative;
-  min-height:100svh;
+  min-height:100vh;   /* fallback */
+  min-height:100dvh;  /* modern mobile browsers */
   overflow:hidden;
 }
 
@@ -135,7 +138,7 @@ input, textarea { cursor: text; }
 }
 
 /* ----------------
-   BUTTON (bounce back)
+   BUTTON
 ----------------- */
 .subscribe-btn{
   padding:16px;
@@ -194,60 +197,75 @@ input, textarea { cursor: text; }
 }
 
 /* =====================
-   MOBILE (FIXED)
-   - Fix Safari white gap using dvh + fallback
-   - Background fully fills phone
-   - Button smaller ONLY on mobile
+   MOBILE
+   - True full-bleed background (no top gap)
+   - Smaller/tighter subscribe UI that “belongs”
 ===================== */
 @media (max-width:640px){
 
-  /* Make the viewport height rock-solid on iOS Safari */
-  html, body { height: 100%; }
-  .subscribe-page{ min-height: 100dvh; min-height: 100svh; }
-  .art-section{
-    min-height: 100dvh;
-    min-height: 100svh;
-  }
-
+  /* Make the background “stick” to the viewport so iOS Safari doesn’t show white gaps */
   .art-bg{
     background: url("./subscribe-page-mobile.png") center / cover no-repeat;
-    transform: none;
-    background-attachment: scroll;
+    transform:none;
+    position: fixed;  /* key: prevents the top white gap on iOS */
+    inset: 0;
   }
 
-  /* Bottom “sheet” stays at bottom but doesn't take over the whole image */
+  /* Keep section full-height even while address bar changes */
+  .art-section{
+    min-height:100vh;
+    min-height:100dvh;
+  }
+
+  /* Bottom sheet: smaller, cleaner, less intrusive */
   .subscribe-ui{
     left:0;
     right:0;
     bottom:0;
-    width:100%;
-    padding:14px 16px 18px;
-    gap:10px;
 
+    width:100%;
+    max-width:460px;              /* keeps it from feeling huge */
+    margin:0 auto;
+
+    gap:10px;
+    padding:
+      14px
+      16px
+      calc(16px + env(safe-area-inset-bottom)); /* iPhone home indicator safe area */
+
+    /* softer / more “designed” */
+    border-radius: 18px 18px 0 0;
     background: linear-gradient(
       to top,
       rgba(255,255,255,.96) 0%,
-      rgba(255,255,255,.82) 58%,
+      rgba(255,255,255,.88) 60%,
       rgba(255,255,255,0) 100%
     );
+    backdrop-filter: blur(6px);
   }
 
-  /* Smaller UI on mobile only */
   .email-input{
-    padding:14px;
-    border-radius:12px;
+    padding:14px 14px;
     font-size:18px;
+    border-radius:12px;
   }
 
+  /* Make button smaller + more proportional on mobile */
   .subscribe-btn{
     padding:12px 14px;
     font-size:18px;
-    letter-spacing:1.6px;
+    letter-spacing:1.5px;
+    border-radius:22px;
   }
 
-  .tiny-note{ font-size:11px; }
+  .tiny-note{
+    font-size:11px;
+  }
 
-  .enter-link{ bottom:8px; }
+  /* Keep corner items readable but not floating in weird spots */
+  .enter-link{
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
 }
 
 /* Reduce motion accessibility */
