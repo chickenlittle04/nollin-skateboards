@@ -70,7 +70,6 @@ input, textarea { cursor: text; }
 
 /* ----------------
    BACKGROUND
-   (FIXED PATHS + cover)
 ----------------- */
 .art-bg{
   position:absolute;
@@ -104,7 +103,6 @@ input, textarea { cursor: text; }
   display:grid;
   gap:14px;
 
-  /* bring back the “in” motion */
   opacity:0;
   transform: translateY(14px);
   animation: uiIn .85s ease forwards;
@@ -196,48 +194,58 @@ input, textarea { cursor: text; }
 }
 
 /* =====================
-   MOBILE
-   - Use mobile background
-   - Keep UI at bottom (not blocking the whole art)
-   - Make art fill phone with no white gap
+   MOBILE (FIXED)
+   - Fix Safari white gap using dvh + fallback
+   - Background fully fills phone
+   - Button smaller ONLY on mobile
 ===================== */
 @media (max-width:640px){
+
+  /* Make the viewport height rock-solid on iOS Safari */
+  html, body { height: 100%; }
+  .subscribe-page{ min-height: 100dvh; min-height: 100svh; }
   .art-section{
-    min-height:100svh;
+    min-height: 100dvh;
+    min-height: 100svh;
   }
 
   .art-bg{
     background: url("./subscribe-page-mobile.png") center / cover no-repeat;
-    transform: none; /* avoid weird edges on mobile */
+    transform: none;
+    background-attachment: scroll;
   }
 
-  /* Bottom “sheet” instead of full overlay */
+  /* Bottom “sheet” stays at bottom but doesn't take over the whole image */
   .subscribe-ui{
     left:0;
     right:0;
     bottom:0;
     width:100%;
-    padding:18px 18px 22px;
-    gap:12px;
+    padding:14px 16px 18px;
+    gap:10px;
 
-    /* only tint the very bottom area */
     background: linear-gradient(
       to top,
       rgba(255,255,255,.96) 0%,
-      rgba(255,255,255,.82) 55%,
+      rgba(255,255,255,.82) 58%,
       rgba(255,255,255,0) 100%
     );
   }
 
+  /* Smaller UI on mobile only */
   .email-input{
-    padding:16px;
-    font-size:20px;
+    padding:14px;
+    border-radius:12px;
+    font-size:18px;
   }
 
   .subscribe-btn{
-    padding:15px;
-    font-size:20px;
+    padding:12px 14px;
+    font-size:18px;
+    letter-spacing:1.6px;
   }
+
+  .tiny-note{ font-size:11px; }
 
   .enter-link{ bottom:8px; }
 }
