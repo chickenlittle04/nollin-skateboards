@@ -68,6 +68,58 @@ input, textarea { cursor: text; }
   overflow:hidden;
 }
 
+/* =========================
+   IMPERFECTION VIBE LAYERS
+   - grain (print texture)
+   - subtle analog flicker
+   NOTE: these are overlays, so layout stays identical
+========================= */
+
+/* Grain overlay */
+.art-section::before{
+  content:"";
+  position:absolute;
+  inset:-10%;
+  pointer-events:none;
+  z-index:2; /* above bg/vignette, below UI (z=3) */
+  opacity:.10;
+  mix-blend-mode:multiply;
+
+  /* “printed” grain using layered gradients */
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0,0,0,.10) 0 1px, transparent 2px) 0 0/14px 14px,
+    radial-gradient(circle at 70% 60%, rgba(0,0,0,.08) 0 1px, transparent 2px) 0 0/18px 18px,
+    linear-gradient(0deg, rgba(0,0,0,.04), rgba(0,0,0,0) 42%, rgba(0,0,0,.03));
+  filter: contrast(1.05);
+  animation: grainShift 7.5s steps(2,end) infinite;
+}
+
+/* Slight “ink breath” overlay (very subtle) */
+.art-section::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  opacity:.06;
+  mix-blend-mode:multiply;
+  background: radial-gradient(900px 650px at 52% 45%, transparent, rgba(0,0,0,.22));
+  animation: inkBreath 10s ease-in-out infinite;
+}
+
+@keyframes grainShift{
+  0%   { transform: translate3d(0,0,0); }
+  25%  { transform: translate3d(-6px,4px,0); }
+  50%  { transform: translate3d(5px,-5px,0); }
+  75%  { transform: translate3d(-3px,-6px,0); }
+  100% { transform: translate3d(0,0,0); }
+}
+
+@keyframes inkBreath{
+  0%,100% { opacity:.05; transform: scale(1); }
+  50%     { opacity:.075; transform: scale(1.015); }
+}
+
 /* ----------------
    BACKGROUND
 ----------------- */
@@ -77,6 +129,31 @@ input, textarea { cursor: text; }
   background: url("./emailsubscribtion.png") center / cover no-repeat;
   transform: scale(1.02);
   z-index:0;
+
+  /* NEW: skateboard-deck “imperfect float + tiny vibration” */
+  will-change: transform, filter;
+  animation:
+    deckFloat 18s ease-in-out infinite,
+    deckJitter 6.5s steps(2,end) infinite;
+}
+
+/* Slow, dreamy drift (like a board rolling) */
+@keyframes deckFloat{
+  0%   { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
+  28%  { transform: scale(1.035) translate3d(12px,-10px,0) rotate(-0.12deg); }
+  56%  { transform: scale(1.03) translate3d(-10px,8px,0) rotate(0.10deg); }
+  78%  { transform: scale(1.04) translate3d(7px,12px,0) rotate(-0.08deg); }
+  100% { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
+}
+
+/* Very subtle “imperfection” jitter (barely perceptible) */
+@keyframes deckJitter{
+  0%   { filter: none; }
+  20%  { filter: contrast(1.02); }
+  40%  { filter: none; }
+  60%  { filter: contrast(1.015); }
+  80%  { filter: none; }
+  100% { filter: none; }
 }
 
 /* ----------------
@@ -114,52 +191,6 @@ input, textarea { cursor: text; }
 }
 
 /* ----------------
-   INPUT
------------------ */
-.email-input{
-  width:100%;
-  padding:18px;
-  border:2px solid var(--stroke);
-  border-radius:12px;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:1px;
-  outline:none;
-  background:rgba(255,255,255,.9);
-  backdrop-filter: blur(2px);
-}
-
-.email-input::placeholder{
-  font-family:"Puggos", sans-serif;
-  letter-spacing:1px;
-}
-
-/* ----------------
-   BUTTON (bounce back)
------------------ */
-.subscribe-btn{
-  padding:16px;
-  border-radius:999px;
-  border:0;
-  background:#000;
-  color:#fff;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:2px;
-  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
-}
-
-.subscribe-btn:hover{
-  transform: translateY(-1px) rotate(-0.15deg);
-  opacity:.94;
-  filter: contrast(1.05);
-}
-.subscribe-btn:active{
-  transform: translateY(0) rotate(0deg);
-  opacity:.86;
-}
-
-/* ----------------
    TEXT
 ----------------- */
 .tiny-note{
@@ -194,14 +225,84 @@ input, textarea { cursor: text; }
 }
 
 /* =====================
+   MailerLite: make injected form match your exact look
+===================== */
+.ml-embedded form{
+  display:grid;
+  gap:14px;
+  margin:0;
+}
+
+/* Email input MailerLite injects */
+.ml-embedded input[type="email"]{
+  width:100%;
+  padding:18px;
+  border:2px solid var(--stroke);
+  border-radius:12px;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
+  letter-spacing:1px;
+  outline:none;
+  background:rgba(255,255,255,.9);
+  backdrop-filter: blur(2px);
+}
+
+.ml-embedded input[type="email"]::placeholder{
+  font-family:"Puggos", sans-serif;
+  letter-spacing:1px;
+}
+
+/* Button MailerLite injects */
+.ml-embedded button,
+.ml-embedded input[type="submit"]{
+  width:100%;
+  padding:16px;
+  border-radius:999px;
+  border:0;
+  background:#000;
+  color:#fff;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
+  letter-spacing:2px;
+  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
+}
+
+.ml-embedded button:hover,
+.ml-embedded input[type="submit"]:hover{
+  transform: translateY(-1px) rotate(-0.15deg);
+  opacity:.94;
+  filter: contrast(1.05);
+}
+.ml-embedded button:active,
+.ml-embedded input[type="submit"]:active{
+  transform: translateY(0) rotate(0deg);
+  opacity:.86;
+}
+
+/* Hide MailerLite default labels (keeps it minimal) */
+.ml-embedded label{
+  display:none !important;
+}
+
+/* Keep success/error messages subtle + on-brand */
+.ml-embedded .ml-form-success,
+.ml-embedded .ml-form-error,
+.ml-embedded .ml-error{
+  font-family:"Courier New", monospace !important;
+  font-size:12px !important;
+  text-align:center !important;
+  opacity:.78 !important;
+}
+
+/* =====================
    MOBILE (FIXED)
-   - Fix Safari white gap using dvh + fallback
-   - Background fully fills phone
-   - Button smaller ONLY on mobile
+   Keep your original intent:
+   - background fully fills phone
+   - bottom sheet gradient
+   - smaller button on mobile
 ===================== */
 @media (max-width:640px){
 
-  /* Make the viewport height rock-solid on iOS Safari */
   html, body { height: 100%; }
   .subscribe-page{ min-height: 100dvh; min-height: 100svh; }
   .art-section{
@@ -211,11 +312,11 @@ input, textarea { cursor: text; }
 
   .art-bg{
     background: url("./subscribe-page-mobile.png") center / cover no-repeat;
-    transform: none;
+    transform: none;          /* keep your mobile framing */
     background-attachment: scroll;
+    animation: none;          /* keep mobile stable (cleaner) */
   }
 
-  /* Bottom “sheet” stays at bottom but doesn't take over the whole image */
   .subscribe-ui{
     left:0;
     right:0;
@@ -233,28 +334,43 @@ input, textarea { cursor: text; }
   }
 
   /* Smaller UI on mobile only */
-  .email-input{
+  .ml-embedded input[type="email"]{
     padding:14px;
     border-radius:12px;
     font-size:18px;
   }
 
-  .subscribe-btn{
+  .ml-embedded button,
+  .ml-embedded input[type="submit"]{
     padding:12px 14px;
     font-size:18px;
     letter-spacing:1.6px;
   }
 
   .tiny-note{ font-size:11px; }
-
   .enter-link{ bottom:8px; }
 }
 
 /* Reduce motion accessibility */
 @media (prefers-reduced-motion: reduce){
   .subscribe-ui{ animation:none; opacity:1; transform:none; }
+  .art-bg{ animation:none !important; }
+  .art-section::before,
+  .art-section::after{ animation:none !important; }
 }
 </style>
+
+<!-- MailerLite Universal -->
+<script>
+(function(w,d,e,u,f,l,n){
+  w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};
+  l=d.createElement(e); l.async=1; l.src=u;
+  n=d.getElementsByTagName(e)[0]; n.parentNode.insertBefore(l,n);
+})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+ml('account','2033019');
+</script>
+<!-- End MailerLite Universal -->
+
 </head>
 
 <body>
@@ -267,32 +383,14 @@ input, textarea { cursor: text; }
     <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
     <a class="enter-link" href="index.html">enter</a>
 
-    <form class="subscribe-ui" id="subscribeForm" autocomplete="off">
-      <input class="email-input" id="email" type="email" placeholder="EMAIL" required />
-      <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
-      <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
-    </form>
+    <!-- Same UI position + same note -->
+    <div class="subscribe-ui" aria-label="Subscribe form">
+      <div class="ml-embedded" data-form="8oEba6"></div>
+      <div class="tiny-note">Get notified when something happens.</div>
+    </div>
 
   </section>
 </main>
 
-<script>
-  // Demo-only submit behavior
-  const form = document.getElementById("subscribeForm");
-  const email = document.getElementById("email");
-  const statusMsg = document.getElementById("statusMsg");
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const val = email.value.trim();
-    if (!val) return;
-
-    statusMsg.textContent = "You’re in. We’ll email you when the page wakes up.";
-    statusMsg.style.opacity = "0.85";
-
-    email.value = "";
-    email.blur();
-  });
-</script>
 </body>
 </html>
