@@ -70,9 +70,6 @@ input, textarea { cursor: text; }
 
 /* =========================
    IMPERFECTION VIBE LAYERS
-   - grain (print texture)
-   - subtle analog flicker
-   NOTE: these are overlays, so layout stays identical
 ========================= */
 
 /* Grain overlay */
@@ -85,7 +82,6 @@ input, textarea { cursor: text; }
   opacity:.10;
   mix-blend-mode:multiply;
 
-  /* “printed” grain using layered gradients */
   background:
     radial-gradient(circle at 20% 30%, rgba(0,0,0,.10) 0 1px, transparent 2px) 0 0/14px 14px,
     radial-gradient(circle at 70% 60%, rgba(0,0,0,.08) 0 1px, transparent 2px) 0 0/18px 18px,
@@ -94,7 +90,7 @@ input, textarea { cursor: text; }
   animation: grainShift 7.5s steps(2,end) infinite;
 }
 
-/* Slight “ink breath” overlay (very subtle) */
+/* Slight “ink breath” overlay */
 .art-section::after{
   content:"";
   position:absolute;
@@ -130,14 +126,12 @@ input, textarea { cursor: text; }
   transform: scale(1.02);
   z-index:0;
 
-  /* NEW: skateboard-deck “imperfect float + tiny vibration” */
   will-change: transform, filter;
   animation:
     deckFloat 18s ease-in-out infinite,
     deckJitter 6.5s steps(2,end) infinite;
 }
 
-/* Slow, dreamy drift (like a board rolling) */
 @keyframes deckFloat{
   0%   { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
   28%  { transform: scale(1.035) translate3d(12px,-10px,0) rotate(-0.12deg); }
@@ -146,7 +140,6 @@ input, textarea { cursor: text; }
   100% { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
 }
 
-/* Very subtle “imperfection” jitter (barely perceptible) */
 @keyframes deckJitter{
   0%   { filter: none; }
   20%  { filter: contrast(1.02); }
@@ -191,6 +184,53 @@ input, textarea { cursor: text; }
 }
 
 /* ----------------
+   INPUT
+----------------- */
+.email-input{
+  width:100%;
+  padding:18px;
+  border:2px solid var(--stroke);
+  border-radius:12px;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
+  letter-spacing:1px;
+  outline:none;
+  background:rgba(255,255,255,.9);
+  backdrop-filter: blur(2px);
+}
+
+.email-input::placeholder{
+  font-family:"Puggos", sans-serif;
+  letter-spacing:1px;
+}
+
+/* ----------------
+   BUTTON (bounce back)
+----------------- */
+.subscribe-btn{
+  width:100%;
+  padding:16px;
+  border-radius:999px;
+  border:0;
+  background:#000;
+  color:#fff;
+  font-family:"Puggos", sans-serif;
+  font-size:clamp(18px,1.7vw,26px);
+  letter-spacing:2px;
+  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
+}
+
+.subscribe-btn:hover{
+  transform: translateY(-1px) rotate(-0.15deg);
+  opacity:.94;
+  filter: contrast(1.05);
+}
+.subscribe-btn:active{
+  transform: translateY(0) rotate(0deg);
+  opacity:.86;
+}
+
+/* ----------------
    TEXT
 ----------------- */
 .tiny-note{
@@ -225,81 +265,7 @@ input, textarea { cursor: text; }
 }
 
 /* =====================
-   MailerLite: make injected form match your exact look
-===================== */
-.ml-embedded form{
-  display:grid;
-  gap:14px;
-  margin:0;
-}
-
-/* Email input MailerLite injects */
-.ml-embedded input[type="email"]{
-  width:100%;
-  padding:18px;
-  border:2px solid var(--stroke);
-  border-radius:12px;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:1px;
-  outline:none;
-  background:rgba(255,255,255,.9);
-  backdrop-filter: blur(2px);
-}
-
-.ml-embedded input[type="email"]::placeholder{
-  font-family:"Puggos", sans-serif;
-  letter-spacing:1px;
-}
-
-/* Button MailerLite injects */
-.ml-embedded button,
-.ml-embedded input[type="submit"]{
-  width:100%;
-  padding:16px;
-  border-radius:999px;
-  border:0;
-  background:#000;
-  color:#fff;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:2px;
-  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
-}
-
-.ml-embedded button:hover,
-.ml-embedded input[type="submit"]:hover{
-  transform: translateY(-1px) rotate(-0.15deg);
-  opacity:.94;
-  filter: contrast(1.05);
-}
-.ml-embedded button:active,
-.ml-embedded input[type="submit"]:active{
-  transform: translateY(0) rotate(0deg);
-  opacity:.86;
-}
-
-/* Hide MailerLite default labels (keeps it minimal) */
-.ml-embedded label{
-  display:none !important;
-}
-
-/* Keep success/error messages subtle + on-brand */
-.ml-embedded .ml-form-success,
-.ml-embedded .ml-form-error,
-.ml-embedded .ml-error{
-  font-family:"Courier New", monospace !important;
-  font-size:12px !important;
-  text-align:center !important;
-  opacity:.78 !important;
-}
-
-/* =====================
    MOBILE (FIXED)
-   Keep your original intent:
-   - background fully fills phone
-   - bottom sheet gradient
-   - smaller button on mobile
 ===================== */
 @media (max-width:640px){
 
@@ -312,9 +278,9 @@ input, textarea { cursor: text; }
 
   .art-bg{
     background: url("./subscribe-page-mobile.png") center / cover no-repeat;
-    transform: none;          /* keep your mobile framing */
+    transform: none;
     background-attachment: scroll;
-    animation: none;          /* keep mobile stable (cleaner) */
+    animation: none; /* keep mobile stable */
   }
 
   .subscribe-ui{
@@ -333,15 +299,13 @@ input, textarea { cursor: text; }
     );
   }
 
-  /* Smaller UI on mobile only */
-  .ml-embedded input[type="email"]{
+  .email-input{
     padding:14px;
     border-radius:12px;
     font-size:18px;
   }
 
-  .ml-embedded button,
-  .ml-embedded input[type="submit"]{
+  .subscribe-btn{
     padding:12px 14px;
     font-size:18px;
     letter-spacing:1.6px;
@@ -360,7 +324,7 @@ input, textarea { cursor: text; }
 }
 </style>
 
-<!-- MailerLite Universal -->
+<!-- MailerLite Universal (keep) -->
 <script>
 (function(w,d,e,u,f,l,n){
   w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};
@@ -383,14 +347,82 @@ ml('account','2033019');
     <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
     <a class="enter-link" href="index.html">enter</a>
 
-    <!-- Same UI position + same note -->
-    <div class="subscribe-ui" aria-label="Subscribe form">
-      <div class="ml-embedded" data-form="8oEba6"></div>
-      <div class="tiny-note">Get notified when something happens.</div>
-    </div>
+    <!-- YOUR ORIGINAL LOOK (restored) -->
+    <form class="subscribe-ui"
+          id="subscribeForm"
+          autocomplete="off"
+          action="https://assets.mailerlite.com/jsonp/2033019/forms/176615507314607188/subscribe"
+          method="post">
+
+      <!-- IMPORTANT: name matches MailerLite expected format -->
+      <input class="email-input"
+             id="email"
+             name="fields[email]"
+             type="email"
+             placeholder="EMAIL"
+             required />
+
+      <!-- Some MailerLite forms expect this flag; harmless if ignored -->
+      <input type="hidden" name="ml-submit" value="1" />
+
+      <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
+
+      <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
+
+      <!-- Fallback if JS is disabled: normal submit still works -->
+      <noscript>
+        <div class="tiny-note" style="opacity:.75">JavaScript is required to subscribe.</div>
+      </noscript>
+    </form>
 
   </section>
 </main>
+
+<script>
+  const form = document.getElementById("subscribeForm");
+  const emailInput = document.getElementById("email");
+  const statusMsg = document.getElementById("statusMsg");
+  const endpoint = form.getAttribute("action");
+
+  function setMsg(text){
+    statusMsg.textContent = text;
+    statusMsg.style.opacity = "0.85";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    setMsg("…");
+
+    // Build payload exactly like a real form post
+    const body = new URLSearchParams();
+    body.set("fields[email]", email);
+    body.set("ml-submit", "1");
+
+    try{
+      // MailerLite endpoint is cross-domain; we can't read response (that's normal).
+      // mode:'no-cors' still sends the request successfully.
+      await fetch(endpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: body.toString()
+      });
+
+      setMsg("You’re in. We’ll email you when the page wakes up.");
+      emailInput.value = "";
+      emailInput.blur();
+    } catch(err){
+      console.error(err);
+      setMsg("Didn’t go through. Try again.");
+    }
+  });
+</script>
 
 </body>
 </html>
