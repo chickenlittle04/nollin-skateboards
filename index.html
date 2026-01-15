@@ -126,27 +126,41 @@ input, textarea { cursor: text; }
   transform: scale(1.02);
   z-index:0;
 
+  /* VX1000 handheld: subtle shake + micro zoom */
   will-change: transform, filter;
-  animation:
-    deckFloat 18s ease-in-out infinite,
-    deckJitter 6.5s steps(2,end) infinite;
+  animation: vxCam 9.5s ease-in-out infinite;
 }
 
-@keyframes deckFloat{
-  0%   { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
-  28%  { transform: scale(1.035) translate3d(12px,-10px,0) rotate(-0.12deg); }
-  56%  { transform: scale(1.03) translate3d(-10px,8px,0) rotate(0.10deg); }
-  78%  { transform: scale(1.04) translate3d(7px,12px,0) rotate(-0.08deg); }
-  100% { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
-}
-
-@keyframes deckJitter{
-  0%   { filter: none; }
-  20%  { filter: contrast(1.02); }
-  40%  { filter: none; }
-  60%  { filter: contrast(1.015); }
-  80%  { filter: none; }
-  100% { filter: none; }
+/* VX1000 handheld: subtle shake + micro zoom */
+@keyframes vxCam{
+  0%{
+    transform: scale(1.02) translate3d(0,0,0) rotate(0deg);
+    filter: none;
+  }
+  12%{
+    transform: scale(1.028) translate3d(3px,-2px,0) rotate(-0.05deg);
+  }
+  24%{
+    transform: scale(1.022) translate3d(-2px,2px,0) rotate(0.04deg);
+  }
+  36%{
+    transform: scale(1.032) translate3d(2px,3px,0) rotate(-0.03deg);
+    filter: contrast(1.02);
+  }
+  52%{
+    transform: scale(1.024) translate3d(-3px,1px,0) rotate(0.05deg);
+    filter: none;
+  }
+  68%{
+    transform: scale(1.034) translate3d(2px,-3px,0) rotate(-0.04deg);
+  }
+  84%{
+    transform: scale(1.023) translate3d(-1px,2px,0) rotate(0.03deg);
+  }
+  100%{
+    transform: scale(1.02) translate3d(0,0,0) rotate(0deg);
+    filter: none;
+  }
 }
 
 /* ----------------
@@ -354,7 +368,6 @@ ml('account','2033019');
           action="https://assets.mailerlite.com/jsonp/2033019/forms/176615507314607188/subscribe"
           method="post">
 
-      <!-- IMPORTANT: name matches MailerLite expected format -->
       <input class="email-input"
              id="email"
              name="fields[email]"
@@ -362,14 +375,12 @@ ml('account','2033019');
              placeholder="EMAIL"
              required />
 
-      <!-- Some MailerLite forms expect this flag; harmless if ignored -->
       <input type="hidden" name="ml-submit" value="1" />
 
       <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
 
       <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
 
-      <!-- Fallback if JS is disabled: normal submit still works -->
       <noscript>
         <div class="tiny-note" style="opacity:.75">JavaScript is required to subscribe.</div>
       </noscript>
@@ -397,14 +408,11 @@ ml('account','2033019');
 
     setMsg("…");
 
-    // Build payload exactly like a real form post
     const body = new URLSearchParams();
     body.set("fields[email]", email);
     body.set("ml-submit", "1");
 
     try{
-      // MailerLite endpoint is cross-domain; we can't read response (that's normal).
-      // mode:'no-cors' still sends the request successfully.
       await fetch(endpoint, {
         method: "POST",
         mode: "no-cors",
