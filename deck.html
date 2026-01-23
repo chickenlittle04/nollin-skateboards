@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NOLLIN – Deck</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    @font-face {
+      font-family: 'Puggos';
+      src: url('assets/fonts/Puggos-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: #ffffff;
+      font-family: 'Puggos', sans-serif;
+      color: #000;
+    }
+
+    /* PAGE WRAPPER */
+    .page-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+    }
+
+    /* NAV (match main site) */
+    .top-nav {
+      padding: 10px 0 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 80px;
+      font-size: 32px;
+      letter-spacing: 1px;
+    }
+
+    .top-nav a {
+      color: #000;
+      text-decoration: none;
+      transition: opacity .15s ease;
+    }
+
+    .top-nav a:hover {
+      opacity: .6;
+    }
+
+    .nav-logo {
+      width: 140px;
+      height: auto;
+      display: block;
+    }
+
+    /* MAIN LAYOUT */
+    .product-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      column-gap: 80px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    /* Deck image side */
+    .deck-preview-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .deck-preview {
+      width: 210px;
+      height: auto;
+      border-radius: 120px;
+      filter: drop-shadow(0 14px 30px rgba(0,0,0,0.35));
+    }
+
+    .add-to-cart-big {
+      font-size: 30px;
+      letter-spacing: 2px;
+      margin-top: 10px;
+    }
+
+    /* Info side */
+    .deck-info {
+      text-align: center;
+	  font-size: 40px;
+    }
+
+    .deck-title {
+      font-size: 38px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .deck-subtitle {
+      font-size: 35px;
+      margin-bottom: 24px;
+    }
+
+    .deck-story {
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-line;
+      margin-bottom: 34px;
+    }
+
+    .deck-meta {
+      font-size: 17px;
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .grip-options {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .grip-box {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #000;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-size: 18px;
+    }
+
+    .grip-label-row {
+      display: flex;
+      justify-content: center;
+      gap: 58px;
+      font-size: 16px;
+      margin-bottom: 18px;
+    }
+
+    .small-note {
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      opacity: 0.55;
+    }
+
+    .bottom-faint {
+      margin-top: 70px;
+      font-size: 34px;
+      letter-spacing: 4px;
+      opacity: 0.14;
+      text-align: left;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .page-wrap {
+        padding: 16px 18px 60px;
+      }
+
+      .top-nav {
+        gap: 40px;
+        font-size: 26px;
+      }
+
+      .product-row {
+        grid-template-columns: 1fr;
+        row-gap: 40px;
+        margin-top: 30px;
+      }
+
+      .deck-info {
+        text-align: center;
+      }
+
+      .bottom-faint {
+        text-align: center;
+        margin-top: 40px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .top-nav {
+        flex-wrap: wrap;
+        gap: 18px;
+        font-size: 22px;
+      }
+
+      .deck-preview {
+        width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrap">
+
+    <!-- NAV -->
+    <nav class="top-nav">
+      <a href="index.html">Home</a>
+      <a href="skateboards.html">Menu</a>
+      <img src="assets/img/yellow logo.png" class="nav-logo" alt="logo">
+      <a href="#">Cart</a>
+      <a href="#">search</a>
+    </nav>
+
+    <!-- MAIN PRODUCT CONTENT -->
+    <div class="product-row">
+
+      <!-- Left: deck + big ADD TO CART text -->
+      <div class="deck-preview-wrap">
+        <img
+          id="deckImage"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AApMBgRkNvLoAAAAASUVORK5CYII="
+          alt="Deck"
+          class="deck-preview"
+        >
+        <div class="add-to-cart-big" id="deckCTA">
+          ADD TO CART
+        </div>
+      </div>
+
+      <!-- Right: story + meta -->
+      <div class="deck-info">
+        <div class="deck-title" id="deckTitle">BRAIN SYNAPSES</div>
+        <div class="deck-subtitle" id="deckSubtitle">Story</div>
+
+        <div class="deck-story" id="deckStory"></div>
+        <div class="deck-meta"  id="deckMeta"></div>
+
+        <div class="grip-options">
+          <div class="grip-box" data-value="Y" id="gripYes">X</div>
+          <div class="grip-box" data-value="N" id="gripNo"></div>
+        </div>
+
+        <div class="grip-label-row">
+          <span>Y</span>
+          <span>N</span>
+        </div>
+
+        <div class="small-note" id="deckNote"></div>
+      </div>
+
+    </div>
+
+    <div class="bottom-faint">ADD TO CART</div>
+
+  </div> <!-- end .page-wrap -->
+
+  <script>
+    // --- Deck data: add one object per deck ---
+    var DECKS = {
+      "brain-synapses": {
+        title: "BRAIN SYNAPSES",
+        subtitle: "Story",
+        image: "assets/img/deck1.png",
+        story: "THE BRAIN OF A SKATEBOARDER\nTHROUGH THE EYE OF A HIGH\nPOWERED MICROSCOPIC LENSE.\nTHE SYNAPSES BOARD IS SCREEN\nPRINTED IN MY GARAGE.\n\nSTANDARDS WERE NOT MET\nDURING PRODUCTION, SO\nTHEREFORE WILL NEVER BE\nPERFECT.\n\nEVERY BOARD IS UNIQUE.",
+        meta: "PRICE 88\nSize 8.0\nGRIP TAPE",
+        note: "hand printed. Small imperfections are part of the story."
+      },
+
+      "nollin-yellow": {
+        title: "NOLLIN LOGO",
+        subtitle: "Therapeutic",
+        image: "assets/img/deck2.png",
+        story: "A SIMPLE YELLOW FIELD\nCARRYING THE NOLLIN MARK.\n\nMADE FOR DAYS WHERE YOU\nNEED NOTHING BUT PUSHES,\nFAILURES, AND ONE LANDED TRICK.",
+        meta: "PRICE 88\nSize 8.0\nGRIP TAPE",
+        note: "Edition of 50."
+      }
+
+      // add more decks here...
+    };
+
+    // --- Simple helper to read ?id= from URL ---
+    function getQueryParam(name) {
+      var search = window.location.search.substring(1);
+      var parts = search.split("&");
+      for (var i = 0; i < parts.length; i++) {
+        var pair = parts[i].split("=");
+        if (decodeURIComponent(pair[0]) === name) {
+          return decodeURIComponent((pair[1] || "").replace(/\+/g, " "));
+        }
+      }
+      return null;
+    }
+
+    // --- Which deck? ---
+    var id   = getQueryParam("id") || "brain-synapses";
+    var deck = DECKS[id] || DECKS["brain-synapses"];
+
+    // --- Fill content ---
+    var imgEl   = document.getElementById("deckImage");
+    var titleEl = document.getElementById("deckTitle");
+    var subEl   = document.getElementById("deckSubtitle");
+    var storyEl = document.getElementById("deckStory");
+    var metaEl  = document.getElementById("deckMeta");
+    var noteEl  = document.getElementById("deckNote");
+
+    imgEl.src           = deck.image;
+    titleEl.textContent = deck.title;
+    subEl.textContent   = deck.subtitle;
+    storyEl.textContent = deck.story;
+    metaEl.textContent  = deck.meta;
+    noteEl.textContent  = deck.note;
+
+    // --- simple grip toggle ---
+    var gripYes = document.getElementById("gripYes");
+    var gripNo  = document.getElementById("gripNo");
+
+    function setGrip(choice) {
+      gripYes.textContent = (choice === "Y") ? "X" : "";
+      gripNo.textContent  = (choice === "N") ? "X" : "";
+    }
+
+    gripYes.addEventListener("click", function () { setGrip("Y"); });
+    gripNo.addEventListener("click",  function () { setGrip("N"); });
+
+    setGrip("Y"); // default
+  </script>
+
+</body>
+</html>
+

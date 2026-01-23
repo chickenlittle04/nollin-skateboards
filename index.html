@@ -1,428 +1,209 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NOLLIN — Subscribe</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NOLLIN — Opening Page</title>
 
-<style>
-/* =====================
-   FONT (FIXED PATH)
-   Your file is in repo root:  ./Puggos-Regular.ttf
-===================== */
-@font-face{
-  font-family: "Puggos";
-  src: url("./Puggos-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+  <style>
+    :root{
+      --bg:#0e0e0e;
+      --paper:#ffffff;
+      --ink:#111;
+      --accent:#ff3b30; /* red accent if you want to re-use later */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
+      display:block;          /* no grid centering */
+      padding:0;              /* remove outer gap so it’s full screen */
+    }
 
-:root{
-  --ink:#111;
-  --paper:#fff;
-  --stroke:rgba(0,0,0,.55);
+    /* Fullscreen canvas (no rounded card look) */
+    .frame{
+      position:relative;
+      width:100vw;
+      height:100vh;
+      max-width:100%;
+      max-height:100%;
+      background:var(--paper);  /* white canvas */
+      border-radius:0;          /* <- no rounded corners */
+      box-shadow:none;          /* <- no drop shadow */
+      overflow:hidden;
+      border:none;              /* <- no red border box */
+    }
 
-  /* Scribble cursor (inline SVG) */
-  --scribble-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M6 22C9 17 12 9 17 7c2-1 4 1 2 3-3 4-6 8-8 13' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M16 10l6 2' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 2 24, auto;
-}
+    /* Main artwork stage */
+    .stage{
+      position:absolute;
+      inset:0;
+      background:#fff;
+      overflow:hidden;
+    }
 
-/* ----------------
-   GLOBAL RESET
------------------ */
-*{ box-sizing:border-box; }
+    /* All image layers */
+    .layer{
+      position:absolute;
+      display:block;
+      pointer-events:none;
+      object-fit:contain;
+    }
 
-html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-  background:var(--paper);
-  color:var(--ink);
-  font-family:"Puggos", sans-serif;
-  -webkit-text-size-adjust:100%;
-}
+    .scribble{
+      top:10%;
+      left:8%;
+      width:20%;
+      height:auto;
+    }
 
-/* Cursor everywhere (desktop + mobile friendly)
-   NOTE: phones won't show a cursor, that's normal */
-html, body, .subscribe-page, .art-section, .art-bg, .paper-vignette,
-.subscribe-ui, .quiet-tag, .enter-link, .tiny-note, button, a {
-  cursor: var(--scribble-cursor);
-}
+    .ovals{
+      top:9%;
+      left:50%;
+      transform:translateX(-50%);
+      width:88%;
+      height:auto;
+      opacity:0.65;
+    }
 
-/* Keep I-beam only where typing */
-input, textarea { cursor: text; }
+    .pad-fill{
+      left:50%;
+      transform:translateX(-50%);
+      bottom:27%;
+      width:86%;
+      height:auto;
+    }
 
-/* ----------------
-   PAGE
------------------ */
-.subscribe-page{
-  min-height:100svh;
-}
+    .pad-text{
+      left:50%;
+      transform:translateX(-50%);
+      bottom:30%;
+      width:80%;
+      height:auto;
+    }
 
-/* ----------------
-   ART SECTION
------------------ */
-.art-section{
-  position:relative;
-  min-height:100svh;
-  overflow:hidden;
-}
+    /* smooth animation base */
+    .pad-fill,
+    .pad-text{
+      transition:transform .18s ease, filter .18s ease;
+      transform-origin:center center;
+    }
 
-/* =========================
-   IMPERFECTION VIBE LAYERS
-========================= */
+    /* when pad is active (hover / touch) */
+    .stage.board-active .pad-fill{
+      transform:translateX(-50%) translateY(-4px) scale(1.02);
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));
+    }
+    .stage.board-active .pad-text{
+      transform:translateX(-50%) translateY(-4px) scale(1.04);
+      filter:drop-shadow(0 12px 20px rgba(0,0,0,.4));
+    }
 
-/* Grain overlay */
-.art-section::before{
-  content:"";
-  position:absolute;
-  inset:-10%;
-  pointer-events:none;
-  z-index:2; /* above bg/vignette, below UI (z=3) */
-  opacity:.10;
-  mix-blend-mode:multiply;
+    /* Interactive oval area */
+    .touch-pad{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:28%;
+      width:86%;
+      height:38%;
+      border-radius:60% / 70%;
+      pointer-events:auto;
+      cursor:pointer;
+      overflow:hidden;
+      --x:50%;
+      --y:50%;
+      background: radial-gradient(120px 60px at var(--x) var(--y),
+                                  rgba(0,0,0,.06),
+                                  transparent 60%);
+      transition: background .15s ease-out, transform .15s ease-out, box-shadow .15s ease-out;
+    }
+    .touch-pad:hover{
+      box-shadow: inset 0 0 2px rgba(0,0,0,.08);
+    }
+    .touch-pad:active{
+      transform:translateX(-50%) scale(.995);
+    }
 
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0,0,0,.10) 0 1px, transparent 2px) 0 0/14px 14px,
-    radial-gradient(circle at 70% 60%, rgba(0,0,0,.08) 0 1px, transparent 2px) 0 0/18px 18px,
-    linear-gradient(0deg, rgba(0,0,0,.04), rgba(0,0,0,0) 42%, rgba(0,0,0,.03));
-  filter: contrast(1.05);
-  animation: grainShift 7.5s steps(2,end) infinite;
-}
+    /* Caption (you can add text later if you want) */
+    .caption{
+      position:absolute;
+      left:0; right:0; bottom:18px;
+      text-align:center;
+      font-size:22px;
+      letter-spacing:.1em;
+      opacity:.7;
+    }
 
-/* Slight “ink breath” overlay */
-.art-section::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:2;
-  opacity:.06;
-  mix-blend-mode:multiply;
-  background: radial-gradient(900px 650px at 52% 45%, transparent, rgba(0,0,0,.22));
-  animation: inkBreath 10s ease-in-out infinite;
-}
-
-@keyframes grainShift{
-  0%   { transform: translate3d(0,0,0); }
-  25%  { transform: translate3d(-6px,4px,0); }
-  50%  { transform: translate3d(5px,-5px,0); }
-  75%  { transform: translate3d(-3px,-6px,0); }
-  100% { transform: translate3d(0,0,0); }
-}
-
-@keyframes inkBreath{
-  0%,100% { opacity:.05; transform: scale(1); }
-  50%     { opacity:.075; transform: scale(1.015); }
-}
-
-/* ----------------
-   BACKGROUND
------------------ */
-.art-bg{
-  position:absolute;
-  inset:0;
-  background: url("./emailsubscribtion.png") center / cover no-repeat;
-  transform: scale(1.02);
-  z-index:0;
-
-  will-change: transform, filter;
-  animation:
-    deckFloat 18s ease-in-out infinite,
-    deckJitter 6.5s steps(2,end) infinite;
-}
-
-@keyframes deckFloat{
-  0%   { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
-  28%  { transform: scale(1.035) translate3d(12px,-10px,0) rotate(-0.12deg); }
-  56%  { transform: scale(1.03) translate3d(-10px,8px,0) rotate(0.10deg); }
-  78%  { transform: scale(1.04) translate3d(7px,12px,0) rotate(-0.08deg); }
-  100% { transform: scale(1.02) translate3d(0,0,0) rotate(0deg); }
-}
-
-@keyframes deckJitter{
-  0%   { filter: none; }
-  20%  { filter: contrast(1.02); }
-  40%  { filter: none; }
-  60%  { filter: contrast(1.015); }
-  80%  { filter: none; }
-  100% { filter: none; }
-}
-
-/* ----------------
-   VIGNETTE
------------------ */
-.paper-vignette{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: radial-gradient(1200px 800px at 50% 45%, transparent, rgba(0,0,0,.08));
-  opacity:.25;
-  z-index:1;
-}
-
-/* ----------------
-   UI (desktop bottom-right)
------------------ */
-.subscribe-ui{
-  position:absolute;
-  right:clamp(16px,4vw,64px);
-  bottom:clamp(16px,4vw,64px);
-  z-index:3;
-  width:min(520px,92vw);
-  display:grid;
-  gap:14px;
-
-  opacity:0;
-  transform: translateY(14px);
-  animation: uiIn .85s ease forwards;
-  animation-delay: .10s;
-}
-
-@keyframes uiIn{
-  to { opacity:1; transform: translateY(0); }
-}
-
-/* ----------------
-   INPUT
------------------ */
-.email-input{
-  width:100%;
-  padding:18px;
-  border:2px solid var(--stroke);
-  border-radius:12px;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:1px;
-  outline:none;
-  background:rgba(255,255,255,.9);
-  backdrop-filter: blur(2px);
-}
-
-.email-input::placeholder{
-  font-family:"Puggos", sans-serif;
-  letter-spacing:1px;
-}
-
-/* ----------------
-   BUTTON (bounce back)
------------------ */
-.subscribe-btn{
-  width:100%;
-  padding:16px;
-  border-radius:999px;
-  border:0;
-  background:#000;
-  color:#fff;
-  font-family:"Puggos", sans-serif;
-  font-size:clamp(18px,1.7vw,26px);
-  letter-spacing:2px;
-  transition: transform .12s ease, opacity .12s ease, filter .18s ease;
-}
-
-.subscribe-btn:hover{
-  transform: translateY(-1px) rotate(-0.15deg);
-  opacity:.94;
-  filter: contrast(1.05);
-}
-.subscribe-btn:active{
-  transform: translateY(0) rotate(0deg);
-  opacity:.86;
-}
-
-/* ----------------
-   TEXT
------------------ */
-.tiny-note{
-  font-family: "Courier New", monospace;
-  font-size:12px;
-  text-align:center;
-  opacity:.6;
-}
-
-/* ----------------
-   CORNERS
------------------ */
-.enter-link,
-.quiet-tag{
-  position:absolute;
-  font-family:"Courier New", monospace;
-  font-size:11px;
-  opacity:.4;
-  z-index:4;
-}
-
-.enter-link{
-  left:16px;
-  bottom:14px;
-  text-decoration:none;
-  color:#000;
-}
-
-.quiet-tag{
-  left:16px;
-  top:14px;
-}
-
-/* =====================
-   MOBILE (FIXED)
-===================== */
-@media (max-width:640px){
-
-  html, body { height: 100%; }
-  .subscribe-page{ min-height: 100dvh; min-height: 100svh; }
-  .art-section{
-    min-height: 100dvh;
-    min-height: 100svh;
-  }
-
-  .art-bg{
-    background: url("./subscribe-page-mobile.png") center / cover no-repeat;
-    transform: none;
-    background-attachment: scroll;
-    animation: none; /* keep mobile stable */
-  }
-
-  .subscribe-ui{
-    left:0;
-    right:0;
-    bottom:0;
-    width:100%;
-    padding:14px 16px 18px;
-    gap:10px;
-
-    background: linear-gradient(
-      to top,
-      rgba(255,255,255,.96) 0%,
-      rgba(255,255,255,.82) 58%,
-      rgba(255,255,255,0) 100%
-    );
-  }
-
-  .email-input{
-    padding:14px;
-    border-radius:12px;
-    font-size:18px;
-  }
-
-  .subscribe-btn{
-    padding:12px 14px;
-    font-size:18px;
-    letter-spacing:1.6px;
-  }
-
-  .tiny-note{ font-size:11px; }
-  .enter-link{ bottom:8px; }
-}
-
-/* Reduce motion accessibility */
-@media (prefers-reduced-motion: reduce){
-  .subscribe-ui{ animation:none; opacity:1; transform:none; }
-  .art-bg{ animation:none !important; }
-  .art-section::before,
-  .art-section::after{ animation:none !important; }
-}
-</style>
-
-<!-- MailerLite Universal (keep) -->
-<script>
-(function(w,d,e,u,f,l,n){
-  w[f]=w[f]||function(){(w[f].q=w[f].q||[]).push(arguments);};
-  l=d.createElement(e); l.async=1; l.src=u;
-  n=d.getElementsByTagName(e)[0]; n.parentNode.insertBefore(l,n);
-})(window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
-ml('account','2033019');
-</script>
-<!-- End MailerLite Universal -->
-
+    /* Mobile tweaks */
+    @media (max-width:700px){
+      .scribble{ top:16%; width:56% }
+      .ovals{ top:26%; width:92% }
+      .pad-fill{ bottom:26%; width:92% }
+      .pad-text{ bottom:28%; width:84% }
+      .touch-pad{ bottom:26%; width:92%; height:40% }
+      .caption{ font-size:18px; bottom:10px }
+    }
+  </style>
 </head>
 
 <body>
-<main class="subscribe-page">
-  <section class="art-section" aria-label="Email subscription">
 
-    <div class="art-bg" aria-hidden="true"></div>
-    <div class="paper-vignette" aria-hidden="true"></div>
+  <main class="frame">
 
-    <div class="quiet-tag">PRIVATE / SUBSCRIBE</div>
-    <a class="enter-link" href="index.html">enter</a>
+    <section class="stage" id="stage">
+      <img class="layer ovals"    src="assets/img/oval-lines.png"           alt="">
+      <img class="layer pad-fill" src="assets/img/skateboard-oval-fill.png" alt="">
+      <img class="layer pad-text" src="assets/img/skateboards-text.png"     alt="">
+      <img class="layer scribble" src="assets/img/put-your-finger-here.png" alt="">
 
-    <!-- YOUR ORIGINAL LOOK (restored) -->
-    <form class="subscribe-ui"
-          id="subscribeForm"
-          autocomplete="off"
-          action="https://assets.mailerlite.com/jsonp/2033019/forms/176615507314607188/subscribe"
-          method="post">
+      <!-- interactive hit area -->
+      <div class="touch-pad" id="touchPad"></div>
 
-      <!-- IMPORTANT: name matches MailerLite expected format -->
-      <input class="email-input"
-             id="email"
-             name="fields[email]"
-             type="email"
-             placeholder="EMAIL"
-             required />
+      <p class="caption"></p>
+    </section>
 
-      <!-- Some MailerLite forms expect this flag; harmless if ignored -->
-      <input type="hidden" name="ml-submit" value="1" />
+  </main>
 
-      <button class="subscribe-btn" type="submit">SUBSCRIBE</button>
+  <script>
+    const pad   = document.getElementById('touchPad');
+    const stage = document.getElementById('stage');
 
-      <div class="tiny-note" id="statusMsg">Get notified when something happens.</div>
-
-      <!-- Fallback if JS is disabled: normal submit still works -->
-      <noscript>
-        <div class="tiny-note" style="opacity:.75">JavaScript is required to subscribe.</div>
-      </noscript>
-    </form>
-
-  </section>
-</main>
-
-<script>
-  const form = document.getElementById("subscribeForm");
-  const emailInput = document.getElementById("email");
-  const statusMsg = document.getElementById("statusMsg");
-  const endpoint = form.getAttribute("action");
-
-  function setMsg(text){
-    statusMsg.textContent = text;
-    statusMsg.style.opacity = "0.85";
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = emailInput.value.trim();
-    if (!email) return;
-
-    setMsg("…");
-
-    // Build payload exactly like a real form post
-    const body = new URLSearchParams();
-    body.set("fields[email]", email);
-    body.set("ml-submit", "1");
-
-    try{
-      // MailerLite endpoint is cross-domain; we can't read response (that's normal).
-      // mode:'no-cors' still sends the request successfully.
-      await fetch(endpoint, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        },
-        body: body.toString()
-      });
-
-      setMsg("You’re in. We’ll email you when the page wakes up.");
-      emailInput.value = "";
-      emailInput.blur();
-    } catch(err){
-      console.error(err);
-      setMsg("Didn’t go through. Try again.");
+    function setPos(e){
+      const r = pad.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX);
+      const y = (e.touches ? e.touches[0].clientY : e.clientY);
+      pad.style.setProperty('--x', ((x - r.left)/r.width*100)+'%');
+      pad.style.setProperty('--y', ((y - r.top)/r.height*100)+'%');
     }
-  });
-</script>
+
+    // move highlight
+    pad.addEventListener('pointermove', setPos);
+    pad.addEventListener('touchstart', setPos, {passive:true});
+    pad.addEventListener('touchmove',  setPos, {passive:true});
+
+    // add/remove animation class on hover / touch
+    pad.addEventListener('pointerenter', () => {
+      stage.classList.add('board-active');
+    });
+    pad.addEventListener('pointerleave', () => {
+      stage.classList.remove('board-active');
+    });
+    pad.addEventListener('touchstart', () => {
+      stage.classList.add('board-active');
+    }, {passive:true});
+    pad.addEventListener('touchend', () => {
+      stage.classList.remove('board-active');
+    });
+
+    // click goes to new page
+    pad.addEventListener('click', () => {
+      window.location.href = 'skateboards.html';   // this is your HOME page
+    });
+  </script>
 
 </body>
 </html>
